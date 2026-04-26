@@ -353,6 +353,26 @@ p {
     position: relative;
 }
 
+.footer-linkedin {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1;
+}
+
+.footer-linkedin svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+.footer-linkedin span {
+    display: inline-block;
+    line-height: 1;
+}
+
 .footer a::after {
     content: "";
     position: absolute;
@@ -540,7 +560,12 @@ p {
     </div>
 
     <div>
-        🔗 <a href="https://linkedin.com/in/simonjosefsen" target="_blank">LinkedIn</a>
+        <a class="footer-linkedin" href="https://linkedin.com/in/simonjosefsen" target="_blank" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4.98 3.5A2.48 2.48 0 1 1 5 8.46a2.48 2.48 0 0 1-.02-4.96ZM3 9h4v12H3V9Zm7 0h3.83v1.64h.05c.53-1.01 1.84-2.08 3.79-2.08 4.05 0 4.8 2.66 4.8 6.12V21h-4v-5.58c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.15 1.45-2.15 2.95V21h-4V9Z"></path>
+            </svg>
+            <span>LinkedIn</span>
+        </a>
     </div>
 
     <div class="footer-rights">All rights reserved Simon Josefsen 2026</div>
