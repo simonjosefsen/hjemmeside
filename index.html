@@ -26,21 +26,36 @@ body {
     padding: 60px 20px;
 }
 
-.logo, .hero, .section, .about {
-    opacity: 0;
-    transform: translateY(18px);
-    animation: fadeUp 0.8s ease forwards;
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(247, 247, 247, 0.94);
+    transition: box-shadow 0.28s ease, background-color 0.28s ease;
 }
 
-.logo { animation-delay: 0.05s; }
-.hero { animation-delay: 0.15s; }
-.section { animation-delay: 0.30s; }
-.about { animation-delay: 0.45s; }
+.site-header.is-scrolled {
+    box-shadow: 0 10px 28px rgba(13, 27, 42, 0.1);
+}
 
-@keyframes fadeUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
+.site-header__inner {
+    max-width: 1100px;
+    margin: auto;
+    padding: 16px 20px 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html.js-ready .reveal:not(.is-visible) {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    html.js-ready .reveal.reveal-active {
+        transition:
+            opacity 0.82s cubic-bezier(0.22, 1, 0.36, 1),
+            transform 0.82s cubic-bezier(0.22, 1, 0.36, 1);
+        transition-delay: var(--reveal-delay, 0ms);
+        will-change: opacity, transform;
     }
 }
 
@@ -49,16 +64,43 @@ body {
     grid-template-columns: 1fr 1fr;
     align-items: center;
     gap: 40px;
+    position: relative;
 }
 
 .logo {
-    font-size: 48px;
-    font-weight: 600;
-    letter-spacing: -1px;
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+    position: relative;
 }
 
-.logo span {
+.logo img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-height: 46px;
+    object-fit: contain;
+}
+
+.logo__fallback {
+    display: none;
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    line-height: 1;
+    color: #1a1a1a;
+}
+
+.logo__fallback span {
     color: #f26522;
+}
+
+.logo.logo--missing .logo__fallback {
+    display: block;
+}
+
+.logo.logo--missing img {
+    display: none;
 }
 
 h1 {
@@ -89,6 +131,7 @@ p {
     box-shadow: 0 24px 60px rgba(13, 27, 42, 0.18);
     animation: floatSoft 7s ease-in-out infinite;
     justify-self: end;
+    isolation: isolate;
 }
 
 @keyframes floatSoft {
@@ -111,6 +154,7 @@ p {
     left: -45px;
     border-radius: 40px;
     animation: orangeDrift 8s ease-in-out infinite;
+    z-index: 0;
 }
 
 @keyframes orangeDrift {
@@ -131,6 +175,75 @@ p {
     top: 40px;
     right: 40px;
     border-radius: 50%;
+    z-index: 1;
+}
+
+.hero-graphic__grid,
+.hero-graphic__system {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.hero-graphic__grid {
+    inset: 18px;
+    z-index: 1;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 42px 42px;
+    opacity: 0.48;
+    mask-image: radial-gradient(circle at 65% 35%, rgba(0, 0, 0, 0.92), transparent 78%);
+}
+
+.hero-graphic__system {
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-graphic__node,
+.hero-graphic__panel,
+.hero-graphic__line,
+.hero-graphic__signal {
+    fill: none;
+}
+
+.hero-graphic__panel {
+    fill: rgba(255, 255, 255, 0.04);
+    stroke: rgba(255, 255, 255, 0.14);
+}
+
+.hero-graphic__line {
+    stroke: rgba(255, 255, 255, 0.18);
+    stroke-width: 1.2;
+}
+
+.hero-graphic__signal {
+    stroke: rgba(242, 101, 34, 0.72);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-dasharray: 8 14;
+    animation: signalFlow 9s linear infinite;
+}
+
+.hero-graphic__node {
+    fill: rgba(255, 255, 255, 0.12);
+    stroke: rgba(255, 255, 255, 0.22);
+}
+
+.hero-graphic__node--accent {
+    fill: rgba(242, 101, 34, 0.18);
+    stroke: rgba(242, 101, 34, 0.55);
+}
+
+@keyframes signalFlow {
+    from {
+        stroke-dashoffset: 48;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
 }
 
 .section {
@@ -180,19 +293,19 @@ p {
 .about {
     margin-top: 80px;
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 50px;
-    align-items: center;
+    grid-template-columns: minmax(0, 620px) minmax(220px, 1fr);
+    gap: 36px;
+    align-items: end;
 }
 
 .about-box {
     background: linear-gradient(135deg, #0d1b2a, #1b263b);
     color: white;
-    padding: 52px 60px;
-    min-height: 260px;
+    padding: 38px 48px;
     position: relative;
     box-shadow: 0 28px 70px rgba(13, 27, 42, 0.22);
-    border-radius: 24px;
+    border-radius: 0;
+    width: 100%;
 
     clip-path: polygon(
         0 0,
@@ -214,25 +327,6 @@ p {
     max-width: 560px;
 }
 
-.about-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.about-list li {
-    margin-bottom: 18px;
-    font-size: 18px;
-    line-height: 1.5;
-}
-
-.about-list li::before {
-    content: "✓";
-    color: #f26522;
-    margin-right: 10px;
-    font-weight: 700;
-}
-
 .footer {
     margin-top: 80px;
     padding: 40px;
@@ -241,6 +335,16 @@ p {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+}
+
+.footer-rights {
+    width: 100%;
+    margin-top: 28px;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    text-align: center;
 }
 
 .footer a {
@@ -276,6 +380,18 @@ p {
         overflow-x: hidden;
     }
 
+    .site-header__inner {
+        padding-top: 14px;
+    }
+
+    .logo img {
+        max-height: 32px;
+    }
+
+    .logo__fallback {
+        font-size: 32px;
+    }
+
     .hero {
         grid-template-columns: 1fr;
         gap: 32px;
@@ -297,24 +413,24 @@ p {
 
     .about {
         grid-template-columns: 1fr;
-        gap: 32px;
+        gap: 18px;
     }
 
     .about-box {
-        padding: 40px 28px;
+        padding: 32px 24px;
         clip-path: none;
-        border-radius: 24px;
-        min-height: auto;
-    }
-
-    .about-list {
-        order: 2;
+        border-radius: 0;
+        width: 100%;
     }
 
     .footer {
         flex-direction: column;
         gap: 20px;
         text-align: center;
+    }
+
+    .footer-rights {
+        margin-top: 8px;
     }
 }
 
@@ -324,7 +440,7 @@ p {
         transition: none !important;
     }
 
-    .logo, .hero, .section, .about {
+    .reveal {
         opacity: 1;
         transform: none;
     }
@@ -334,11 +450,18 @@ p {
 
 <body>
 
+<header class="site-header">
+    <div class="site-header__inner">
+        <div class="logo reveal">
+            <img src="./logo-transparent.png" alt="Simon Josefsen logo" onerror="this.closest('.logo').classList.add('logo--missing')">
+            <span class="logo__fallback" aria-hidden="true">S<span>J</span></span>
+        </div>
+    </div>
+</header>
+
 <div class="container">
 
-    <div class="logo">S<span>J</span></div>
-
-    <div class="hero">
+    <div class="hero reveal">
         <div>
             <h1>Strategi<span class="orange">.</span> AI<span class="orange">.</span><br>Implementering<span class="orange">.</span></h1>
 
@@ -348,41 +471,57 @@ p {
             </p>
         </div>
 
-        <div class="hero-graphic"></div>
+        <div class="hero-graphic" aria-hidden="true">
+            <div class="hero-graphic__grid"></div>
+            <svg class="hero-graphic__system" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+                <rect class="hero-graphic__panel" x="92" y="86" width="100" height="64" rx="16"></rect>
+                <rect class="hero-graphic__panel" x="220" y="138" width="92" height="58" rx="16"></rect>
+                <rect class="hero-graphic__panel" x="144" y="232" width="116" height="72" rx="18"></rect>
+                <path class="hero-graphic__line" d="M192 118H240"></path>
+                <path class="hero-graphic__line" d="M266 196V232"></path>
+                <path class="hero-graphic__line" d="M144 268H112V150"></path>
+                <path class="hero-graphic__signal" d="M112 118H174C194 118 204 138 220 138H272"></path>
+                <path class="hero-graphic__signal" d="M202 304V268C202 248 216 240 232 240H250"></path>
+                <circle class="hero-graphic__node" cx="112" cy="118" r="7"></circle>
+                <circle class="hero-graphic__node hero-graphic__node--accent" cx="266" cy="138" r="7"></circle>
+                <circle class="hero-graphic__node" cx="266" cy="232" r="6"></circle>
+                <circle class="hero-graphic__node hero-graphic__node--accent" cx="202" cy="304" r="8"></circle>
+            </svg>
+        </div>
     </div>
 
-    <div class="section">
+    <div class="section reveal">
         <div class="section-title">STÆRKE KOMPETENCER INDENFOR</div>
 
         <div class="grid">
-            <div class="card">
+            <div class="card reveal reveal-card">
                 <h3>Strategi & Eksekvering</h3>
                 <p>Fra retning til konkrete resultater.</p>
             </div>
 
-            <div class="card">
+            <div class="card reveal reveal-card">
                 <h3>AI & Automatisering</h3>
                 <p>Identifikation og implementering af AI-løsninger.</p>
             </div>
 
-            <div class="card">
+            <div class="card reveal reveal-card">
                 <h3>Udbud & Kontrakter</h3>
                 <p>Strukturerede udbud og stærke aftaler.</p>
             </div>
 
-            <div class="card">
+            <div class="card reveal reveal-card">
                 <h3>Projektledelse</h3>
                 <p>Fremdrift, struktur og leverancer.</p>
             </div>
 
-            <div class="card">
+            <div class="card reveal reveal-card">
                 <h3>Analyse & Optimering</h3>
                 <p>Indsigt der skaber bedre beslutninger.</p>
             </div>
         </div>
     </div>
 
-    <div class="about">
+    <div class="about reveal">
         <div class="about-box">
             <h2>Om mig</h2>
             <p>
@@ -391,18 +530,11 @@ p {
                 der virker i praksis – og gør en reel forskel.
             </p>
         </div>
-
-        <ul class="about-list">
-            <li> Strategisk blik og forretningsforståelse</li>
-            <li> Teknologiforståelse med fokus på AI</li>
-            <li> Systematisk og struktureret tilgang</li>
-            <li> Skaber følgeskab og leverer resultater</li>
-        </ul>
     </div>
 
 </div>
 
-<div class="footer">
+<div class="footer reveal">
     <div>
         ✉ <a href="mailto:mail@simonjosefsen.dk">mail@simonjosefsen.dk</a>
     </div>
@@ -410,7 +542,79 @@ p {
     <div>
         🔗 <a href="https://linkedin.com/in/simonjosefsen" target="_blank">LinkedIn</a>
     </div>
+
+    <div class="footer-rights">All rights reserved Simon Josefsen 2026</div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const siteHeader = document.querySelector(".site-header");
+    const syncHeaderState = function () {
+        if (!siteHeader) {
+            return;
+        }
+
+        siteHeader.classList.toggle("is-scrolled", window.scrollY > 8);
+    };
+
+    syncHeaderState();
+    window.addEventListener("scroll", syncHeaderState, { passive: true });
+
+    if (reduceMotion) {
+        return;
+    }
+
+    document.documentElement.classList.add("js-ready");
+
+    const revealTargets = Array.from(document.querySelectorAll(".reveal"));
+    const cardGroups = Array.from(document.querySelectorAll(".grid"));
+
+    cardGroups.forEach(function (group) {
+        Array.from(group.querySelectorAll(".reveal-card")).forEach(function (card, index) {
+            card.style.setProperty("--reveal-delay", (index * 90) + "ms");
+        });
+    });
+
+    revealTargets.forEach(function (element) {
+        element.classList.add("reveal-active");
+    });
+
+    if (!("IntersectionObserver" in window)) {
+        revealTargets.forEach(function (element) {
+            element.classList.add("is-visible");
+            element.classList.remove("reveal-active");
+        });
+        return;
+    }
+
+    const observer = new IntersectionObserver(function (entries, currentObserver) {
+        entries.forEach(function (entry) {
+            if (!entry.isIntersecting) {
+                return;
+            }
+
+            const element = entry.target;
+            const delayValue = parseInt(element.style.getPropertyValue("--reveal-delay"), 10) || 0;
+
+            element.classList.add("is-visible");
+
+            window.setTimeout(function () {
+                element.classList.remove("reveal-active");
+            }, 900 + delayValue);
+
+            currentObserver.unobserve(element);
+        });
+    }, {
+        threshold: 0.18,
+        rootMargin: "0px 0px -8% 0px"
+    });
+
+    revealTargets.forEach(function (element) {
+        observer.observe(element);
+    });
+});
+</script>
 
 </body>
 </html>
